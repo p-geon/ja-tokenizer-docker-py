@@ -3,9 +3,9 @@ from typing import Tuple
 import MeCab
 
 
-def parse_args():
+def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-t', '--text', type=str, required=True)
+    parser.add_argument('-s', '--sentence', type=str, required=True)
     parser.add_argument('-d', '--dir_dict', type=str, required=True, help='neologd in the Docker container')
     return parser.parse_args()
 
@@ -18,7 +18,7 @@ class Tagger(object):
         self.tokenizer.parse('')
 
 
-    def __call__(self, text: str):
+    def __call__(self, text: str) -> Tuple[str, str]:
         nodes = self.get_nodes(text)
         ret =  self.parse_nodes(nodes)
         return ret
@@ -29,8 +29,8 @@ class Tagger(object):
         return tokenizer
 
     
-    def get_nodes(self, text: str) -> MeCab.Node:
-        return self.tokenizer.parseToNode(text)
+    def get_nodes(self, sentence: str) -> MeCab.Node:
+        return self.tokenizer.parseToNode(sentence)
 
 
     def parse_nodes(self, nodes: MeCab.Node) -> Tuple[str, str]:
@@ -50,10 +50,10 @@ class Tagger(object):
 
 
 if(__name__ == '__main__'):
-    args = parse_args()
+    args = get_args()
     t = Tagger(dir_dict=args.dir_dict)
 
-    ret = t.__call__(args.text)
+    ret = t.__call__(args.sentence)
     
     import pprint
     pprint.pprint(ret)

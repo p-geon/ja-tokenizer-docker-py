@@ -1,4 +1,4 @@
-src/*
-!src/.gitkeep
-
 __pycache__
+
+src/huggingface/*
+!src/huggingface/.gitkeep

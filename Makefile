@@ -2,25 +2,40 @@ export CONTAINER_NAME = wakachigaki-docker-py
 export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
 export BIN_ENTITY_VECTOR = /entity_vector/entity_vector.model.bin
 
+export TEST_WORD = "ピジョン"
+export TEST_SENTENCE = "ピジョンとジョン・レノンが融合してピジョンレノンと成った。"
 
-.PHONY:
-wakachigaki: ## wakachigaki
+
+# ============================================================
+.PHONY: wakachigaki
+wakachigaki: ## tokenizing with MeCab + NEologd
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME) \
 		python ./scripts/wakachigaki.py \
-			--text "ピジョンとジョン・レノンが融合してピジョンレノンに成った。" \
+			--sentence $(TEST_SENTENCE) \
 			--dir_dict $(DIR_NEOLOGD)
 
 
-.PHONY:
-word2vec: ## word2vec
+.PHONY: word2vec
+word2vec: ## convert word to vector (numpy)
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME) \
 		python ./scripts/word2vec.py \
-			--word "ピジョン" \
+			--word $(TEST_WORD) \
 			--bin_entity_filename $(BIN_ENTITY_VECTOR)
+
+
+.PHONY: huggingface_tokenizer
+huggingface_tokenizer: ## tokenizing with huggingface tokenizer
+	docker run -it --rm \
+		-v `pwd`:/work \
+		-v `pwd`/src/huggingface/:/root/.cache/huggingface/transformers \
+		$(CONTAINER_NAME) \
+		python ./scripts/huggingface_tokenizer.py \
+			--sentence $(TEST_SENTENCE)
+
 
 # ============================================================
 .PHONY: build
@@ -29,7 +44,7 @@ build: ## build dockerfile
 
 
 .PHONY: void
-void: ## run with bash
+void: ## enter Docker container
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME) \
@@ -37,7 +52,14 @@ void: ## run with bash
 
 
 .PHONY: run
-run: ## run dockerfile
+run: ## test all
 	@make build
 	@make wakachigaki
 	@make word2vec
+	@make huggingface_tokenizer
+
+
+# ============================================================
+.PHONY:	help
+help:	## show help (this)
+	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
