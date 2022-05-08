@@ -1,2 +1,4 @@
 src/*
 !src/.gitkeep
+
+__pycache__
