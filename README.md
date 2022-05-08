@@ -1,10 +1,17 @@
 # 日本語言語処理つめあわせDockerコンテナ
 
-## Docker HUB (TODO)
+- Docker HUB (TODO)
+- Build Docker
+- **MeCab + NEologd**
+- **HuggingFace Tokenizer with Ja-Bert**
+- **Word2vec**
+- Show help
+
+## Docker Hub (TODO)
 
 https://hub.docker.com/repository/docker/hyperpigeon/ja-tokernizer-py
 
-（DockerHUB 経由で `git clone` せずに分かち書きできるようにしたい。まだやってないですごめんなさい）
+（DockerHub 経由で `git clone` せずに分かち書きできるようにしたい。まだやってないですごめんなさい）
 
 ```
 docker pull hyperpigeon/ja-tokernizer-py
@@ -23,7 +30,8 @@ make build
 
 ## MeCab + NEologd
 
-NEologd ベースの MeCab を使って分かち書きする簡易スクリプトです。
+`NEologd` ベースの MeCab を使って分かち書きする簡易スクリプトです。
+`Makefile` にある変数 `TEST_SENTENCE` の文字列を分かち書きするスクリプトをコンテナ内で走らせます。
 
 **usage**
 
@@ -32,8 +40,6 @@ make mecab_neologd_tokenizer
 ```
 
 **result**
-
-`Makefile` にある変数 `TEST_SENTENCE` の文字列を分かち書きするスクリプトをコンテナ内で走らせます。
 
 ```
 docker run -it --rm \
@@ -73,9 +79,11 @@ docker run -it --rm \
 ```
 
 
-##  huggingface_tokenizer
+## HuggingFace Tokenizer with Ja-Bert
 
-東北大の BERT-Tokenizer による分かち書きの簡易スクリプトをコンテナ内で走らせます。ネットワーク負荷軽減のため、キャッシュを `src/huggingface/` 内に確保します。
+東北大の BERT-Tokenizer による分かち書きの簡易スクリプトをコンテナ内で走らせます。
+`Makefile` にある変数 `TEST_SENTENCE` の文字列を分かち書きするスクリプトをコンテナ内で走らせます。
+ネットワーク負荷軽減のため、キャッシュを `src/huggingface/` 内に確保します。
 
 **usage**
 
@@ -96,16 +104,16 @@ tokenized:  ['ピ', '##ジョン', 'と', 'ジョン', '・', 'レノ', '##ン',
 ```
 
 
-## word2vec
+## Word2vec
 
 gensim + [日本語Wikipediaエンティティベクトル](http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/) で単語をベクトル化します。
+`Makefile` にある変数 `TEST_WORD` の文字列を分かち書きするスクリプトをコンテナ内で走らせます。
 
 **usage**
 
 ```
 make word2vec
 ```
-
 
 ## Show help
 
