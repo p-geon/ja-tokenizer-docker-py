@@ -30,7 +30,7 @@ make build
 
 ## MeCab + NEologd
 
-`NEologd` ベースの MeCab を使って分かち書きする簡易スクリプトです。
+[NEologd](https://github.com/neologd/mecab-ipadic-neologd) ベースの MeCab を使って分かち書きする簡易スクリプトです。
 `Makefile` にある変数 `TEST_SENTENCE` の文字列を分かち書きするスクリプトをコンテナ内で走らせます。
 
 **usage**
@@ -81,8 +81,9 @@ docker run -it --rm \
 
 ## HuggingFace Tokenizer with Ja-Bert
 
-東北大の BERT-Tokenizer による分かち書きの簡易スクリプトをコンテナ内で走らせます。
+[東北大のBERT-Tokenizer](https://huggingface.co/cl-tohoku/bert-base-japanese) による分かち書きの簡易スクリプトをコンテナ内で走らせます。
 `Makefile` にある変数 `TEST_SENTENCE` の文字列を分かち書きするスクリプトをコンテナ内で走らせます。
+
 ネットワーク負荷軽減のため、キャッシュを `src/huggingface/` 内に確保します。
 
 **usage**
@@ -106,21 +107,13 @@ tokenized:  ['ピ', '##ジョン', 'と', 'ジョン', '・', 'レノ', '##ン',
 
 ## Word2vec
 
-gensim + [日本語Wikipediaエンティティベクトル](http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/) で単語をベクトル化します。
+[gensim](https://radimrehurek.com/gensim/) + [日本語Wikipediaエンティティベクトル](http://www.cl.ecei.tohoku.ac.jp/~m-suzuki/jawiki_vector/) で単語をベクトル化します。
 `Makefile` にある変数 `TEST_WORD` の文字列を分かち書きするスクリプトをコンテナ内で走らせます。
 
 **usage**
 
 ```
 make word2vec
-```
-
-## Show help
-
-**usage**
-
-```
-make help
 ```
 
 **result**
@@ -134,4 +127,17 @@ docker run -it --rm \
 		--bin_entity_filename /entity_vector/entity_vector.model.bin
 <class 'numpy.ndarray'> (200,) [ 0.18742366  0.07586656  0.03849505  0.38004303 -0.00524301 -0.20294596
   0.20340575  0.49917793 -0.2951132  -0.08509478]
+```
+
+(表示しているベクトルは都合上、先頭から10個分)
+
+
+## Show help
+
+`Makefile` のコマンドと、その概要を表示します。
+
+**usage**
+
+```
+make help
 ```
