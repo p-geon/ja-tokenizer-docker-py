@@ -23,7 +23,7 @@ docker pull hyperpigeon/ja-tokernizer-py
 
 ```
 git clone git@github.com:p-geon/ja-tokenizer-docker-py.git
-cd wakachigaki-docker-py
+cd ja-tokenizer-docker-py
 make build
 ```
 
@@ -98,9 +98,12 @@ make huggingface_tokenizer
 docker run -it --rm \
 	-v `pwd`:/work \
 	-v `pwd`/src/huggingface/:/root/.cache/huggingface/transformers \
-	wakachigaki-docker-py \
+	ja-tokernizer-py \
 	python ./scripts/huggingface_tokenizer.py \
 		--sentence "ピジョンとジョン・レノンが融合してピジョンレノンと成った。"
+Downloading: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 104/104 [00:00<00:00, 95.7kB/s]
+Downloading: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 479/479 [00:00<00:00, 486kB/s]
+Downloading: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 252k/252k [00:00<00:00, 317kB/s]
 tokenized:  ['ピ', '##ジョン', 'と', 'ジョン', '・', 'レノ', '##ン', 'が', '融合', 'し', 'て', 'ピ', '##ジョン', '##レノ', '##ン', 'と', '成っ', 'た', '。']
 ```
 
@@ -140,4 +143,16 @@ docker run -it --rm \
 
 ```
 make help
+```
+
+**result**
+
+```
+mecab_neologd_tokenizer tokenizing with MeCab + NEologd
+huggingface_tokenizer tokenizing with huggingface tokenizer
+word2vec             convert word to vector (numpy)
+build                build dockerfile
+void                 enter Docker container
+run                  test all
+help                 show help (this)
 ```
