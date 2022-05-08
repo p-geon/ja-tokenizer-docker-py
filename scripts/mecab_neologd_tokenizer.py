@@ -10,7 +10,7 @@ def get_args():
     return parser.parse_args()
 
 
-class Tagger(object):
+class Tokenizer(object):
     def __init__(self, dir_dict: str):
         self.dir_dict = dir_dict
 
@@ -51,7 +51,7 @@ class Tagger(object):
 
 if(__name__ == '__main__'):
     args = get_args()
-    t = Tagger(dir_dict=args.dir_dict)
+    t = Tokenizer(dir_dict=args.dir_dict)
 
     ret = t.__call__(args.sentence)
     

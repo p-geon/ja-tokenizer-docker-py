@@ -1,4 +1,4 @@
-export CONTAINER_NAME = wakachigaki-docker-py
+export CONTAINER_NAME = ja-tokernizer-py
 export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
 export BIN_ENTITY_VECTOR = /entity_vector/entity_vector.model.bin
 
@@ -7,7 +7,7 @@ export TEST_SENTENCE = "ピジョンとジョン・レノンが融合してピ�
 
 
 # ============================================================
-.PHONY: wakachigaki
+.PHONY: mecab_neologd_tokenizer
 mecab_neologd_tokenizer: ## tokenizing with MeCab + NEologd
 	docker run -it --rm \
 		-v `pwd`:/work \
@@ -15,7 +15,6 @@ mecab_neologd_tokenizer: ## tokenizing with MeCab + NEologd
 		python ./scripts/mecab_neologd_tokenizer.py \
 			--sentence $(TEST_SENTENCE) \
 			--dir_dict $(DIR_NEOLOGD)
-
 
 
 .PHONY: huggingface_tokenizer
