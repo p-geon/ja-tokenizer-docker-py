@@ -6,12 +6,15 @@ import MeCab
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--text', type=str, required=True)
+    parser.add_argument('-d', '--dir_dict', type=str, required=True, help='neologd in the Docker container')
     args = parser.parse_args()
     return args
 
 
 class Tagger(object):
-    def __init__(self):
+    def __init__(self, dir_dict: str):
+        self.dir_dict = dir_dict
+
         self.tokenizer = self.init_neologd()
         self.tokenizer.parse('')
 
@@ -22,10 +25,8 @@ class Tagger(object):
         return ret
 
 
-    @staticmethod
-    def init_neologd() -> MeCab.Tagger:
-        dic_path = "/usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd" # neologd in the Docker container
-        tokenizer = MeCab.Tagger(f'-r/dev/null -d{dic_path}') # <- https://github.com/SamuraiT/mecab-python3#common-issues
+    def init_neologd(self) -> MeCab.Tagger:
+        tokenizer = MeCab.Tagger(f'-r/dev/null -d{self.dir_dict}') # <- https://github.com/SamuraiT/mecab-python3#common-issues
         return tokenizer
 
     
@@ -38,7 +39,6 @@ class Tagger(object):
         
 
         while nodes:
-            # 単語を取得
             if(nodes.feature.split(",")[6] == '*'):
                 word = nodes.surface
             else:
@@ -50,12 +50,12 @@ class Tagger(object):
             nodes = nodes.next
         return words, parts
 
+
 def main():
     args = parse_args()
-
-    sentence = args.text
-
-    ret = Tagger().__call__(sentence)
+    t = Tagger(dir_dict=args.dir_dict)
+    
+    ret = t.__call__(args.text)
     
     import pprint
     pprint.pprint(ret)

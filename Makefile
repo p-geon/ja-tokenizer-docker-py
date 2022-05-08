@@ -22,7 +22,9 @@ run: ## run dockerfile
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME) \
-		python ./test.py --text "ピジョンとジョン・レノンが融合してピジョンレノンに成った。"
+		python ./test.py \
+			--text "ピジョンとジョン・レノンが融合してピジョンレノンに成った。" \
+			--dir_dict $(DIR_NEOLOGD)
 
 
 .PHONY: mecab
