@@ -1,0 +1,2 @@
+mecab-python3==1.0.5
+#gensim==4.1.2

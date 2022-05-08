@@ -1,4 +1,5 @@
 export CONTAINER_NAME = wakachigaki-docker-py
+export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
 
 
 .PHONY: build
@@ -21,4 +22,9 @@ run: ## run dockerfile
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME) \
-		python ./test.py
+		python ./test.py --text "ピジョンとジョン・レノンが融合してピジョンレノンに成った。"
+
+
+.PHONY: mecab
+mecab: ## tap mecab directly
+	mecab -d $(DIR_NEOLOGD) \
