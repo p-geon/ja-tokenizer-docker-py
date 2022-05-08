@@ -1,5 +1,5 @@
-from typing import Tuple
 import argparse
+from typing import Tuple
 import MeCab
 
 
@@ -7,8 +7,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', '--text', type=str, required=True)
     parser.add_argument('-d', '--dir_dict', type=str, required=True, help='neologd in the Docker container')
-    args = parser.parse_args()
-    return args
+    return parser.parse_args()
 
 
 class Tagger(object):
@@ -20,7 +19,7 @@ class Tagger(object):
 
 
     def __call__(self, text: str):
-        nodes = self.get_node(text)
+        nodes = self.get_nodes(text)
         ret =  self.parse_nodes(nodes)
         return ret
 
@@ -30,14 +29,13 @@ class Tagger(object):
         return tokenizer
 
     
-    def get_node(self, text: str) -> MeCab.Node:
+    def get_nodes(self, text: str) -> MeCab.Node:
         return self.tokenizer.parseToNode(text)
 
 
     def parse_nodes(self, nodes: MeCab.Node) -> Tuple[str, str]:
         words, parts = [], []
         
-
         while nodes:
             if(nodes.feature.split(",")[6] == '*'):
                 word = nodes.surface
@@ -51,15 +49,11 @@ class Tagger(object):
         return words, parts
 
 
-def main():
+if(__name__ == '__main__'):
     args = parse_args()
     t = Tagger(dir_dict=args.dir_dict)
-    
+
     ret = t.__call__(args.text)
     
     import pprint
     pprint.pprint(ret)
-
-
-if(__name__ == '__main__'):
-    main()
