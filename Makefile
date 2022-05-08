@@ -8,23 +8,14 @@ export TEST_SENTENCE = "ピジョンとジョン・レノンが融合してピ�
 
 # ============================================================
 .PHONY: wakachigaki
-wakachigaki: ## tokenizing with MeCab + NEologd
+mecab_neologd_tokenizer: ## tokenizing with MeCab + NEologd
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME) \
-		python ./scripts/wakachigaki.py \
+		python ./scripts/mecab_neologd_tokenizer.py \
 			--sentence $(TEST_SENTENCE) \
 			--dir_dict $(DIR_NEOLOGD)
 
-
-.PHONY: word2vec
-word2vec: ## convert word to vector (numpy)
-	docker run -it --rm \
-		-v `pwd`:/work \
-		$(CONTAINER_NAME) \
-		python ./scripts/word2vec.py \
-			--word $(TEST_WORD) \
-			--bin_entity_filename $(BIN_ENTITY_VECTOR)
 
 
 .PHONY: huggingface_tokenizer
@@ -35,6 +26,16 @@ huggingface_tokenizer: ## tokenizing with huggingface tokenizer
 		$(CONTAINER_NAME) \
 		python ./scripts/huggingface_tokenizer.py \
 			--sentence $(TEST_SENTENCE)
+
+
+.PHONY: word2vec
+word2vec: ## convert word to vector (numpy)
+	docker run -it --rm \
+		-v `pwd`:/work \
+		$(CONTAINER_NAME) \
+		python ./scripts/word2vec.py \
+			--word $(TEST_WORD) \
+			--bin_entity_filename $(BIN_ENTITY_VECTOR)
 
 
 # ============================================================
@@ -54,9 +55,9 @@ void: ## enter Docker container
 .PHONY: run
 run: ## test all
 	@make build
-	@make wakachigaki
-	@make word2vec
+	@make mecab_neologd_tokenizer
 	@make huggingface_tokenizer
+	@make word2vec
 
 
 # ============================================================
