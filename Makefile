@@ -3,28 +3,28 @@ export TEST_SENTENCE = "ピジョンとジョン・レノンが融合してピ�
 
 # ============================================================
 export CONTAINER_NAME_TOKENIZER_MECAB = ja-tokenizer-mecab-neologd
-export CONTAINER_PATH_MECAB = docker/Dockerfile.tokenizer_mecab
+export CONTAINER_PATH_MECAB = docker/Dockerfile.tokenizer_mecab_neologd
 export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
-.PHONY: mecab_neologd_tokenizer
-mecab_neologd_tokenizer: ## tokenizing with MeCab + NEologd
+.PHONY: tokenizer_mecab_neologd
+tokenizer_mecab_neologd: ## tokenizing with MeCab + NEologd
 	docker build -f $(CONTAINER_PATH_MECAB) -t $(CONTAINER_NAME_TOKENIZER_MECAB) .
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME_TOKENIZER_MECAB) \
-		python ./scripts/mecab_neologd_tokenizer.py \
+		python ./scripts/tokenizer_mecab_neologd.py \
 			--sentence $(TEST_SENTENCE) \
 			--dir_dict $(DIR_NEOLOGD)
 
 
 export CONTAINER_NAME_TOKENIZER_BERT = ja-tokenizer-tohoku-bert
-export CONTAINER_PATH_TOKENIZER_BERT = docker/Dockerfile.huggingface_tokenizer
-.PHONY: huggingface_tokenizer
-huggingface_tokenizer: ## tokenizing with huggingface tokenizer
+export CONTAINER_PATH_TOKENIZER_BERT = docker/Dockerfile.tokenizer_huggingface
+.PHONY: tokenizer_huggingface
+tokenizer_huggingface: ## tokenizing with huggingface tokenizer
 	docker build -f $(CONTAINER_PATH_TOKENIZER_BERT) -t $(CONTAINER_NAME_TOKENIZER_BERT) .
 	docker run -it --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME_TOKENIZER_BERT) \
-		python ./scripts/huggingface_tokenizer.py \
+		python ./scripts/tokenizer_huggingface.py \
 			--sentence $(TEST_SENTENCE)
 
 
@@ -43,24 +43,10 @@ word2vec: ## convert word to vector (numpy)
 
 
 # ============================================================
-.PHONY: build
-build: ## build dockerfile
-	docker build -f Dockerfile -t $(CONTAINER_NAME) .
-
-
-.PHONY: void
-void: ## enter Docker container
-	docker run -it --rm \
-		-v `pwd`:/work \
-		$(CONTAINER_NAME) \
-		/bin/bash
-
-
 .PHONY: run
 run: ## test all
-	@make build
-	@make mecab_neologd_tokenizer
-	@make huggingface_tokenizer
+	@make tokenizer_mecab_neologd
+	@make tokenizer_huggingface
 	@make word2vec
 
 

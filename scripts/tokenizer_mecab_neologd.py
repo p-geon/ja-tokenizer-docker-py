@@ -53,7 +53,7 @@ if(__name__ == '__main__'):
     args = get_args()
     t = Tokenizer(dir_dict=args.dir_dict)
 
-    ret = t.__call__(args.sentence)
+    ws, ps = t.__call__(args.sentence)
     
-    import pprint
-    pprint.pprint(ret)
+    for w, p in zip(ws, ps):
+        print(w, p, sep='\t')
