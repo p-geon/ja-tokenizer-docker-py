@@ -1,61 +1,52 @@
-export CONTAINER_NAME = ja-tokernizer-py
-export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
-export BIN_ENTITY_VECTOR = /entity_vector/entity_vector.model.bin
-
 export TEST_WORD = "ピジョン"
 export TEST_SENTENCE = "ピジョンとジョン・レノンが融合してピジョンレノンと成った。"
 
-
 # ============================================================
-.PHONY: mecab_neologd_tokenizer
-mecab_neologd_tokenizer: ## tokenizing with MeCab + NEologd
+export CONTAINER_NAME_TOKENIZER_MECAB = ja-tokenizer-mecab-neologd
+export CONTAINER_PATH_MECAB = docker/Dockerfile.tokenizer_mecab_neologd
+export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
+.PHONY: tokenizer_mecab_neologd
+tokenizer_mecab_neologd: ## tokenizing with MeCab + NEologd
+	docker build -f $(CONTAINER_PATH_MECAB) -t $(CONTAINER_NAME_TOKENIZER_MECAB) .
 	docker run -it --rm \
 		-v `pwd`:/work \
-		$(CONTAINER_NAME) \
-		python ./scripts/mecab_neologd_tokenizer.py \
+		$(CONTAINER_NAME_TOKENIZER_MECAB) \
+		python ./scripts/tokenizer_mecab_neologd.py \
 			--sentence $(TEST_SENTENCE) \
 			--dir_dict $(DIR_NEOLOGD)
 
 
-.PHONY: huggingface_tokenizer
-huggingface_tokenizer: ## tokenizing with huggingface tokenizer
+export CONTAINER_NAME_TOKENIZER_BERT = ja-tokenizer-tohoku-bert
+export CONTAINER_PATH_TOKENIZER_BERT = docker/Dockerfile.tokenizer_huggingface
+.PHONY: tokenizer_huggingface
+tokenizer_huggingface: ## tokenizing with huggingface tokenizer
+	docker build -f $(CONTAINER_PATH_TOKENIZER_BERT) -t $(CONTAINER_NAME_TOKENIZER_BERT) .
 	docker run -it --rm \
 		-v `pwd`:/work \
-		-v `pwd`/src/huggingface/:/root/.cache/huggingface/transformers \
-		$(CONTAINER_NAME) \
-		python ./scripts/huggingface_tokenizer.py \
+		$(CONTAINER_NAME_TOKENIZER_BERT) \
+		python ./scripts/tokenizer_huggingface.py \
 			--sentence $(TEST_SENTENCE)
 
 
+export CONTAINER_NAME_WORD2VEC = ja-word2vec
+export CONTAINER_PATH_WORD2VEC = docker/Dockerfile.word2vec
+export BIN_ENTITY_VECTOR = /entity_vector/entity_vector.model.bin
 .PHONY: word2vec
 word2vec: ## convert word to vector (numpy)
+	docker build -f $(CONTAINER_PATH_WORD2VEC) -t $(CONTAINER_NAME_WORD2VEC) .
 	docker run -it --rm \
 		-v `pwd`:/work \
-		$(CONTAINER_NAME) \
+		$(CONTAINER_NAME_WORD2VEC) \
 		python ./scripts/word2vec.py \
 			--word $(TEST_WORD) \
 			--bin_entity_filename $(BIN_ENTITY_VECTOR)
 
 
 # ============================================================
-.PHONY: build
-build: ## build dockerfile
-	docker build -f Dockerfile -t $(CONTAINER_NAME) .
-
-
-.PHONY: void
-void: ## enter Docker container
-	docker run -it --rm \
-		-v `pwd`:/work \
-		$(CONTAINER_NAME) \
-		/bin/bash
-
-
 .PHONY: run
 run: ## test all
-	@make build
-	@make mecab_neologd_tokenizer
-	@make huggingface_tokenizer
+	@make tokenizer_mecab_neologd
+	@make tokenizer_huggingface
 	@make word2vec
 
 

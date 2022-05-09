@@ -44,38 +44,24 @@ make mecab_neologd_tokenizer
 ```
 docker run -it --rm \
 	-v `pwd`:/work \
-	wakachigaki-docker-py \
-	python ./scripts/mecab_neologd_tokenizer.py \
+	ja-tokenizer-mecab-neologd \
+	python ./scripts/tokenizer_mecab_neologd.py \
 		--sentence "ピジョンとジョン・レノンが融合してピジョンレノンと成った。" \
 		--dir_dict /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
-(['',
-  'ピジョン',
-  'と',
-  'ジョン・レノン',
-  'が',
-  '融合',
-  'する',
-  'て',
-  'ピジョンレノン',
-  'と',
-  '成る',
-  'た',
-  '。',
-  ''],
- ['BOS/EOS',
-  '名詞',
-  '助詞',
-  '名詞',
-  '助詞',
-  '名詞',
-  '動詞',
-  '助詞',
-  '名詞',
-  '助詞',
-  '動詞',
-  '助動詞',
-  '記号',
-  'BOS/EOS'])
+	BOS/EOS
+ピジョン	名詞
+と	助詞
+ジョン・レノン	名詞
+が	助詞
+融合	名詞
+する	動詞
+て	助詞
+ピジョンレノン	名詞
+と	助詞
+成る	動詞
+た	助動詞
+。	記号
+	BOS/EOS
 ```
 
 
@@ -89,7 +75,7 @@ docker run -it --rm \
 **usage**
 
 ```
-make huggingface_tokenizer
+make tokenizer_huggingface
 ```
 
 **result**
@@ -97,13 +83,12 @@ make huggingface_tokenizer
 ```
 docker run -it --rm \
 	-v `pwd`:/work \
-	-v `pwd`/src/huggingface/:/root/.cache/huggingface/transformers \
-	ja-tokernizer-py \
-	python ./scripts/huggingface_tokenizer.py \
+	ja-tokenizer-tohoku-bert \
+	python ./scripts/tokenizer_huggingface.py \
 		--sentence "ピジョンとジョン・レノンが融合してピジョンレノンと成った。"
-Downloading: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 104/104 [00:00<00:00, 95.7kB/s]
-Downloading: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 479/479 [00:00<00:00, 486kB/s]
-Downloading: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 252k/252k [00:00<00:00, 317kB/s]
+Downloading: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 104/104 [00:00<00:00, 109kB/s]
+Downloading: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 479/479 [00:00<00:00, 515kB/s]
+Downloading: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 252k/252k [00:00<00:00, 316kB/s]
 tokenized:  ['ピ', '##ジョン', 'と', 'ジョン', '・', 'レノ', '##ン', 'が', '融合', 'し', 'て', 'ピ', '##ジョン', '##レノ', '##ン', 'と', '成っ', 'た', '。']
 ```
 
@@ -124,7 +109,7 @@ make word2vec
 ```
 docker run -it --rm \
 	-v `pwd`:/work \
-	wakachigaki-docker-py \
+	ja-word2vec \
 	python ./scripts/word2vec.py \
 		--word "ピジョン" \
 		--bin_entity_filename /entity_vector/entity_vector.model.bin
@@ -148,11 +133,9 @@ make help
 **result**
 
 ```
-mecab_neologd_tokenizer tokenizing with MeCab + NEologd
-huggingface_tokenizer tokenizing with huggingface tokenizer
+tokenizer_mecab_neologd tokenizing with MeCab + NEologd
+tokenizer_huggingface tokenizing with huggingface tokenizer
 word2vec             convert word to vector (numpy)
-build                build dockerfile
-void                 enter Docker container
 run                  test all
 help                 show help (this)
 ```
