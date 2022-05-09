@@ -1,37 +1,42 @@
-export CONTAINER_NAME = ja-tokernizer-py
-export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
-export BIN_ENTITY_VECTOR = /entity_vector/entity_vector.model.bin
-
 export TEST_WORD = "ピジョン"
 export TEST_SENTENCE = "ピジョンとジョン・レノンが融合してピジョンレノンと成った。"
 
-
 # ============================================================
+export CONTAINER_NAME_TOKENIZER_MECAB = ja-tokenizer-mecab-neologd
+export CONTAINER_PATH_MECAB = docker/Dockerfile.tokenizer_mecab
+export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
 .PHONY: mecab_neologd_tokenizer
 mecab_neologd_tokenizer: ## tokenizing with MeCab + NEologd
+	docker build -f $(CONTAINER_PATH_MECAB) -t $(CONTAINER_NAME_TOKENIZER_MECAB) .
 	docker run -it --rm \
 		-v `pwd`:/work \
-		$(CONTAINER_NAME) \
+		$(CONTAINER_NAME_TOKENIZER_MECAB) \
 		python ./scripts/mecab_neologd_tokenizer.py \
 			--sentence $(TEST_SENTENCE) \
 			--dir_dict $(DIR_NEOLOGD)
 
 
+export CONTAINER_NAME_TOKENIZER_BERT = ja-tokenizer-tohoku-bert
+export CONTAINER_PATH_TOKENIZER_BERT = docker/Dockerfile.huggingface_tokenizer
 .PHONY: huggingface_tokenizer
 huggingface_tokenizer: ## tokenizing with huggingface tokenizer
+	docker build -f $(CONTAINER_PATH_TOKENIZER_BERT) -t $(CONTAINER_NAME_TOKENIZER_BERT) .
 	docker run -it --rm \
 		-v `pwd`:/work \
-		-v `pwd`/src/huggingface/:/root/.cache/huggingface/transformers \
-		$(CONTAINER_NAME) \
+		$(CONTAINER_NAME_TOKENIZER_BERT) \
 		python ./scripts/huggingface_tokenizer.py \
 			--sentence $(TEST_SENTENCE)
 
 
+export CONTAINER_NAME_WORD2VEC = ja-word2vec
+export CONTAINER_PATH_WORD2VEC = docker/Dockerfile.word2vec
+export BIN_ENTITY_VECTOR = /entity_vector/entity_vector.model.bin
 .PHONY: word2vec
 word2vec: ## convert word to vector (numpy)
+	docker build -f $(CONTAINER_PATH_WORD2VEC) -t $(CONTAINER_NAME_WORD2VEC) .
 	docker run -it --rm \
 		-v `pwd`:/work \
-		$(CONTAINER_NAME) \
+		$(CONTAINER_NAME_WORD2VEC) \
 		python ./scripts/word2vec.py \
 			--word $(TEST_WORD) \
 			--bin_entity_filename $(BIN_ENTITY_VECTOR)
