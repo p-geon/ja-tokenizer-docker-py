@@ -54,6 +54,7 @@ if(__name__ == '__main__'):
     t = Tokenizer(dir_dict=args.dir_dict)
 
     ws, ps = t.__call__(args.sentence)
+
     
     for w, p in zip(ws, ps):
-        print(w, p, sep='\t')
+        print(f'{w}\t{p}')
