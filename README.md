@@ -1,12 +1,13 @@
 # 日本語言語処理つめあわせDockerコンテナ
 
-- Docker HUB (TODO)
+<!-- - Docker HUB (TODO)-->
 - Build Docker
 - **MeCab + NEologd**
 - **HuggingFace Tokenizer with Ja-Bert**
 - **Word2vec**
 - Show help
 
+<!--
 ## Docker Hub (TODO)
 
 https://hub.docker.com/repository/docker/hyperpigeon/ja-tokernizer-py
@@ -17,14 +18,16 @@ https://hub.docker.com/repository/docker/hyperpigeon/ja-tokernizer-py
 docker pull hyperpigeon/ja-tokernizer-py
 ...
 ```
-
+-->
 
 ## Build docker (local)
+
+Run all scripts with each Dockerfiles.
 
 ```
 git clone git@github.com:p-geon/ja-tokenizer-docker-py.git
 cd ja-tokenizer-docker-py
-make build
+make run
 ```
 
 
