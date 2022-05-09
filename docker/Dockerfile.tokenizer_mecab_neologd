@@ -1,4 +1,4 @@
-FROM python:3.9.6
+FROM python:3.9.6 as base-image
 LABEL maintainer='p-geon'
 
 RUN apt-get update -q && apt-get install -y -q --no-install-recommends \
@@ -11,8 +11,15 @@ RUN git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git && \
   cd mecab-ipadic-neologd && \
   ./bin/install-mecab-ipadic-neologd -n -a --forceyes --asuser
 
-RUN pip install -q --upgrade pip
-RUN pip install -q mecab-python3==1.0.5
+
+FROM python:3.9.6
+ARG path_neologd
+COPY --from=base-image $path_neologd $path_neologd
+
+ARG requirements_txt
+COPY $requirements_txt ./$requirements_txt
+RUN pip install -q --upgrade pip && \
+    pip install -r $requirements_txt  -q
 
 WORKDIR /work
 USER root
