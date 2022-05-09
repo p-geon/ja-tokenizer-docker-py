@@ -22,7 +22,7 @@ docker pull hyperpigeon/ja-tokernizer-py
 
 ## Build docker (local)
 
-Run all scripts with each Dockerfiles.
+Run all scripts with each Dockerfile.
 
 ```
 git clone git@github.com:p-geon/ja-tokenizer-docker-py.git
@@ -39,7 +39,7 @@ make run
 **usage**
 
 ```
-make mecab_neologd_tokenizer
+make tokenizer_mecab_neologd
 ```
 
 **result**
