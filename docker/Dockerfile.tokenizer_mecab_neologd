@@ -16,10 +16,11 @@ FROM python:3.9.6
 ARG path_neologd
 COPY --from=base-image $path_neologd $path_neologd
 
-ARG requirements_txt
-COPY $requirements_txt ./$requirements_txt
 RUN pip install -q --upgrade pip && \
-    pip install -r $requirements_txt  -q
+    pip install -q \
+      mecab-python3==1.0.5 \
+      jupyter==1.0.0
+
 
 WORKDIR /work
 USER root

@@ -17,7 +17,7 @@ class Word2Vec(object):
         self.model = KeyedVectors.load_word2vec_format(model_path, binary=True)
 
 
-    def __call__(self, word: str):
+    def __call__(self, word: str) -> object:
         try:  # existent word
             v = self.model.get_vector(word)
             return v

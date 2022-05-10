@@ -12,10 +12,11 @@ RUN tar -jxvf /20170201.tar.bz2
 FROM python:3.9.6 
 COPY --from=base-image /entity_vector/entity_vector.model.bin /
 
-ARG requirements_txt
-COPY $requirements_txt ./$requirements_txt
 RUN pip install -q --upgrade pip && \
-    pip install -r $requirements_txt  -q
+    pip install -q  \
+        gensim==4.2.0 \
+        jupyter==1.0.0
+
 
 WORKDIR /work
 USER root

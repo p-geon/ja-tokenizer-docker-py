@@ -1,10 +1,15 @@
 FROM python:3.9.6
 LABEL maintainer='p-geon'
 
-ARG requirements_txt
-COPY $requirements_txt ./$requirements_txt
 RUN pip install -q --upgrade pip && \
-    pip install -r $requirements_txt  -q
+    pip install -q \
+        tokenizers==0.12.1 \
+        transformers[tf-cpu]==4.18.0 \
+        fugashi==1.1.2 \
+        ipadic==1.0.0 \
+        jupyter==1.0.0
+# transformers[torch]==4.18.0 is also available instead of transformers[tf-cpu]
+
 
 WORKDIR /work
 USER root
