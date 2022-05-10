@@ -10,6 +10,8 @@ export DIR_NEOLOGD = /usr/lib/x86_64-linux-gnu/mecab/dic/mecab-ipadic-neologd
 
 
 # ============================================================
+# scripts
+# ============================================================
 .PHONY: tokenizer_mecab_neologd
 tokenizer_mecab_neologd: ## tokenizing with MeCab + NEologd
 	docker build -f docker/Dockerfile.tokenizer_mecab_neologd \
@@ -25,8 +27,7 @@ tokenizer_mecab_neologd: ## tokenizing with MeCab + NEologd
 
 .PHONY: tokenizer_huggingface
 tokenizer_huggingface: ## tokenizing with huggingface tokenizer
-	docker build -f docker/Dockerfile.tokenizer_huggingface \
-		-t $(CONTAINER_TNZ_BERT) .
+	docker build -f docker/Dockerfile.tokenizer_huggingface -t $(CONTAINER_TNZ_BERT) .
 	docker run --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_TNZ_BERT) \
@@ -36,8 +37,7 @@ tokenizer_huggingface: ## tokenizing with huggingface tokenizer
 
 .PHONY: word2vec
 word2vec: ## convert word to vector (numpy)
-	docker build -f docker/Dockerfile.word2vec \
-		-t $(CONTAINER_NAME_WORD2VEC) .
+	docker build -f docker/Dockerfile.word2vec -t $(CONTAINER_NAME_WORD2VEC) .
 	docker run --rm \
 		-v `pwd`:/work \
 		$(CONTAINER_NAME_WORD2VEC) \
@@ -47,10 +47,34 @@ word2vec: ## convert word to vector (numpy)
 
 
 # ============================================================
-.PHONY: notebook
-notebook: ## instantiate notebook
-	docker build -f docker/Dockerfile.word2vec \
-		-t $(CONTAINER_NAME_WORD2VEC) .
+# notebooks
+# ============================================================
+.PHONY: notebook_tokenizer_mecab_neologd
+notebook_tokenizer_mecab_neologd: ## start notebook, mecab+neologd
+	docker build -f docker/Dockerfile.tokenizer_mecab_neologd \
+		--build-arg path_neologd=$(DIR_NEOLOGD) \
+		-t $(CONTAINER_TNZ_MECAB) .
+	docker run --rm \
+		-v `pwd`:/work \
+		-p 8888:8888 \
+		-e DIR_NEOLOGD=$(DIR_NEOLOGD) \
+		$(CONTAINER_TNZ_MECAB) \
+		jupyter notebook --port 8888 --ip=0.0.0.0 --allow-root
+
+
+.PHONY: notebook_tokenizer_huggingface
+notebook_tokenizer_huggingface: ## start notebook, huggingface tokenizer
+	docker build -f docker/Dockerfile.tokenizer_huggingface -t $(CONTAINER_TNZ_BERT) .
+	docker run --rm \
+		-v `pwd`:/work \
+		-p 8888:8888 \
+		$(CONTAINER_TNZ_BERT) \
+		jupyter notebook --port 8888 --ip=0.0.0.0 --allow-root
+
+
+.PHONY: notebook_word2vec
+notebook_word2vec: ## start notebook, word2vec
+	docker build -f docker/Dockerfile.word2vec -t $(CONTAINER_NAME_WORD2VEC) .
 	docker run --rm \
 		-v `pwd`:/work \
 		-p 8888:8888 \
@@ -67,7 +91,6 @@ run: ## test all
 	@make word2vec
 
 
-# ============================================================
 .PHONY:	help
 help:	## show help (this)
 	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'

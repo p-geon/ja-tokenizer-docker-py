@@ -24,6 +24,12 @@ docker pull hyperpigeon/ja-tokernizer-py
 ```
 -->
 
+
+## 環境
+
+- Docker: `Docker version 20.10.9, build c2ea9bc` (おそらく19.以上なら大丈夫だと思います)
+
+
 ## Build docker (local)
 
 `git clone` した後に `make run` すれば、すべてのコンテナが生成・実行されます。
@@ -33,6 +39,24 @@ git clone git@github.com:p-geon/ja-tokenizer-docker-py.git
 cd ja-tokenizer-docker-py
 make run
 ```
+
+## Notebooks
+
+以下の三種類とも jupyter notebook を用意し、手を加えやすくしました。
+Makefile コマンドで `docker build` + `docker run` できます。
+起動後は URL をブラウザに貼り付けてブラウザで操作してください。
+
+- tokenizer_mecab_neologd: `make notebook_tokenizer_mecab_neologd`
+- tokenizer_huggingface: `make notebook_tokenizer_huggingface`
+- notebook_word2vec: `make notebook_word2vec`
+
+
+注意点として、環境とノートブックが一対一対応なので、
+
+`notebook_tokenizer_mecab_neologd` では `notebooks/tokenizer_mecab_neologd.ipynb` の環境しか動きません。
+ほかも同様です。名前で判断してください。
+
+（なんかいい解決方法あったら教えて下さい。）
 
 
 ## MeCab + NEologd

@@ -17,7 +17,10 @@ ARG path_neologd
 COPY --from=base-image $path_neologd $path_neologd
 
 RUN pip install -q --upgrade pip && \
-    pip install -q mecab-python3==1.0.5
+    pip install -q \
+      mecab-python3==1.0.5 \
+      jupyter==1.0.0
+
 
 WORKDIR /work
 USER root
