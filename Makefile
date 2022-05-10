@@ -47,6 +47,19 @@ word2vec: ## convert word to vector (numpy)
 
 
 # ============================================================
+.PHONY: notebook
+notebook: ## instantiate notebook
+	docker build -f docker/Dockerfile.word2vec \
+		-t $(CONTAINER_NAME_WORD2VEC) .
+	docker run --rm \
+		-v `pwd`:/work \
+		-p 8888:8888 \
+		-e ENTITY_FILENAME=$(BIN_ENTITY_VECTOR) \
+		$(CONTAINER_NAME_WORD2VEC) \
+		jupyter notebook --port 8888 --ip=0.0.0.0 --allow-root
+
+
+# ============================================================
 .PHONY: run
 run: ## test all
 	@make tokenizer_mecab_neologd

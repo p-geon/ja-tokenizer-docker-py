@@ -13,7 +13,10 @@ FROM python:3.9.6
 COPY --from=base-image /entity_vector/entity_vector.model.bin /
 
 RUN pip install -q --upgrade pip && \
-    pip install -q gensim==4.2.0
+    pip install -q  \
+        gensim==4.2.0 \
+        jupyter==1.0.0
+
 
 WORKDIR /work
 USER root
